@@ -1,0 +1,37 @@
+# boj.kr/10830
+
+import sys
+input = sys.stdin.readline
+
+N, B = map(int, input().split())
+matrix = [list(map(int, input().split())) for _ in range(N)]
+
+
+def mat_mul(ma, mb):
+    result = []
+    for i in ma:
+        row = []
+        for j in list(zip(*mb)):
+            tmp = 0
+            for k, l in zip(i, j):
+                tmp += k * l
+            row.append(tmp % 1000)
+        result.append(row)
+    return result
+
+def recursive(matrix, B):
+    if B == 2:
+        return mat_mul(matrix, matrix)
+    if B % 2 == 0:
+        memo = recursive(matrix, B // 2)
+        return mat_mul(memo, memo)
+    else:
+        return mat_mul(recursive(matrix, B - 1), matrix)
+
+if B == 1:
+    for i in matrix:
+        print(*list(map(lambda c: c % 1000, i)))
+else:
+    x = recursive(matrix, B)
+    for i in x:
+        print(*i)
