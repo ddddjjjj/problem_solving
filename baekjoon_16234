@@ -1,0 +1,41 @@
+# link -> boj.kr/16234
+
+from collections import deque
+
+N, L, R = map(int, input().split())
+land = [list(map(int, input().split())) for _ in range(N)]
+
+def bfs(x_c, y_c):
+    queue = deque([[x_c, y_c]])
+    visited[x_c][y_c] = 1
+    union = [(x_c, y_c)]
+    while queue:
+        x, y = queue.popleft()
+        for dx, dy in zip([-1, 0, 1, 0], [0, -1, 0, 1]):
+            if 0 <= x + dx < N and 0 <= y + dy < N:
+                if (visited[x + dx][y + dy] == 0) and (L <= abs(land[x][y] - land[x + dx][y + dy]) <= R):
+                    visited[x + dx][y + dy] = 1
+                    queue.append([x + dx, y + dy])
+                    union.append((x + dx, y + dy))
+    if len(union) > 1:
+        post_num = sum([land[i][j] for i, j in union]) // len(union)
+        for i, j in union:
+            land[i][j] = post_num
+        return True
+    else:
+        return False
+
+cnt = 0
+while True:
+    move_flag = False
+    visited = [[0] * N for _ in range(N)]
+    for x in range(len(land)):
+        for y in range(len(land[0])):
+            if visited[x][y] == 0:
+                if bfs(x, y):
+                    move_flag = True
+    if not move_flag:
+        break
+    cnt += 1
+
+print(cnt)
